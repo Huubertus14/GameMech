@@ -10,6 +10,10 @@ public class PlayerMovement : MonoBehaviour {
 
     private Rigidbody2D rb;
     private float speed = 1;
+    private float movementSpeed = 0;
+
+    public float sprintSpeed = 0.9f;
+    public float walkSpeed = 0.5f;
 
     //0 = down
     //1 = up
@@ -18,7 +22,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private int state = 0;
     private SpriteRenderer spr;
-    private int animationSpeed = 5;
+    private float animationSpeed = 5;
 
     public Sprite[] downSprites = new Sprite[4];
     public Sprite[] upSprites = new Sprite[4];
@@ -28,6 +32,9 @@ public class PlayerMovement : MonoBehaviour {
     public float animationCounter = 0;
     // Use this for initialization
     void Awake () {
+        //Walkingspeed
+        movementSpeed = 0.5f;
+
         spr = gameObject.GetComponentInChildren<SpriteRenderer>();
         rb = gameObject.GetComponent<Rigidbody2D>();
         
@@ -82,44 +89,44 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
+    private void SprintFunction()
+    {
+        //Checks if sprinting or not
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            movementSpeed = sprintSpeed;
+            animationSpeed = movementSpeed * 10;
+        }
+        else
+        {
+            movementSpeed = walkSpeed;
+            animationSpeed = movementSpeed * 10;
+            
+        }
+    }
 
     void MovementSet()
     {
-        if (Input.GetKey("w"))
-        {
-            //Up
-            transform.position = new Vector3(transform.position.x, transform.position.y + 1, 0);
-            state = 1;
-        }
+        SprintFunction();
+        MovementForce();
+        AnimationInput();
+    }
 
-        if (Input.GetKey("a"))
-        {
-            //Left
-            transform.position = new Vector3(transform.position.x - 1, transform.position.y, 0);
-            state = 2;
-        }
+    
 
-        if (Input.GetKey("s"))
+    private void AnimationInput()
+    {
+        if (!Input.GetKey("d") && !Input.GetKey("w") && !Input.GetKey("s") && !Input.GetKey("a"))
         {
-            //Down
-            transform.position = new Vector3(transform.position.x, transform.position.y - 1, 0);
-            state = 0;
-        }
 
-        if (Input.GetKey("d"))
-        {
-            //Right
-            transform.position = new Vector3(transform.position.x + 1, transform.position.y, 0);
-            state = 3;
-        }
-
-        if(!Input.GetKey("d") && !Input.GetKey("w") && !Input.GetKey("s") && !Input.GetKey("a"))
-        {
+            rb.velocity = new Vector2(0, 0);
             animationCounter = 0;
-        }else
+            PlayerAnimation();
+        }
+        else
         {
             animationCounter += animationSpeed * Time.deltaTime;
-            if(animationCounter > 3.9f)
+            if (animationCounter > 3.9f)
             {
                 animationCounter = 0;
             }
@@ -131,26 +138,29 @@ public class PlayerMovement : MonoBehaviour {
         if (Input.GetKey("w"))
         {
             //Up
-           rb.AddForce(Vector2.up * speed);
-
+            rb.velocity = new Vector2(rb.velocity.x, movementSpeed);
+            state = 1;
         }
 
         if (Input.GetKey("a"))
         {
             //Left
-            rb.AddForce(-Vector2.right * speed);
+            rb.velocity = new Vector2(-movementSpeed, rb.velocity.y);
+            state = 2;
         }
 
         if (Input.GetKey("s"))
         {
             //Down
-            rb.AddForce(-Vector2.up * speed);
+            rb.velocity = new Vector2(rb.velocity.x, -movementSpeed);
+            state = 0;
         }
 
         if (Input.GetKey("d"))
         {
             //Right
-            rb.AddForce(Vector2.right * speed);
+            rb.velocity = new Vector2(movementSpeed, rb.velocity.y);
+            state = 3;
         }
     }
 }
