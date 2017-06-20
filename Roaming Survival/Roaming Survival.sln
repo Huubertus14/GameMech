@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roaming Survival", "Roaming Survival.csproj", "{644C9BC6-4C3C-665E-0939-DBCB13C45EDA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{644C9BC6-4C3C-665E-0939-DBCB13C45EDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{644C9BC6-4C3C-665E-0939-DBCB13C45EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{644C9BC6-4C3C-665E-0939-DBCB13C45EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{644C9BC6-4C3C-665E-0939-DBCB13C45EDA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
