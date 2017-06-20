@@ -4,9 +4,11 @@ using System.Collections;
 public class PlayerMovement : MonoBehaviour {
     /*
      * This script is used to detect the movement of the player
-     * This wil also detects any actions the player makes like chopping wood of attacking
+     * This wil also detects any actions the player makes like chopping wood or attacking
  
      */
+
+
 
     private Rigidbody2D rb;
     private float speed = 1;
@@ -15,12 +17,20 @@ public class PlayerMovement : MonoBehaviour {
     public float sprintSpeed = 0.9f;
     public float walkSpeed = 0.5f;
 
+
+    public bool actionInUse = false;
+    private float actionTimer;
+    public float actionCounter;
+    private ActionController acController;
+
     //0 = down
     //1 = up
     //2 = left
     //3 = rigth
 
     private int state = 0;
+
+
     private SpriteRenderer spr;
     private float animationSpeed = 5;
 
@@ -35,39 +45,71 @@ public class PlayerMovement : MonoBehaviour {
         //Walkingspeed
         movementSpeed = 0.5f;
 
+        actionTimer = 3;
+        actionCounter = actionTimer;
+
+
+        actionInUse = false;
+
         spr = gameObject.GetComponentInChildren<SpriteRenderer>();
         rb = gameObject.GetComponent<Rigidbody2D>();
+        acController = gameObject.GetComponentInChildren<ActionController>();
         
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+
+        ActionCheck();
         MovementSet();
         PlayerAnimation();
     }
 
     private void PlayerAnimation()
     {
-        //Check the state and call the animations for that kind of sprite set & state
-        if (state == 0)
-        {
-            FixedPlayerAnimation(downSprites);
-        }
-        else if (state == 1)
-        {
-            FixedPlayerAnimation(upSprites);
-        }
-        else if (state == 2)
-        {
-            FixedPlayerAnimation(leftSprites);
-        }
-        else if (state == 3)
-        {
-            FixedPlayerAnimation(rightSprites);
-        }
+            //Check the state and call the animations for that kind of sprite set & state
+            if (state == 0)
+            {
+                FixedPlayerAnimation(downSprites);
+            }
+            else if (state == 1)
+            {
+                FixedPlayerAnimation(upSprites);
+            }
+            else if (state == 2)
+            {
+                FixedPlayerAnimation(leftSprites);
+            }
+            else if (state == 3)
+            {
+                FixedPlayerAnimation(rightSprites);
+            }
+        
 
     }
     
+    private void ActionCheck()
+    {
+        if(actionCounter > -1)
+        {
+            actionCounter -= 1 * Time.deltaTime;
+        }
+
+        if (actionCounter < 0) {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                actionCounter = actionTimer;
+                actionInUse = true;
+                
+            } else
+            {
+                actionInUse = false;
+            }
+            
+        }
+        acController.ActionUse(state, actionInUse);
+    }
+
     private void FixedPlayerAnimation(Sprite[] sprites)
     {
         //down move animation
@@ -92,28 +134,25 @@ public class PlayerMovement : MonoBehaviour {
     private void SprintFunction()
     {
         //Checks if sprinting or not
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            movementSpeed = sprintSpeed;
-            animationSpeed = movementSpeed * 10;
-        }
-        else
-        {
-            movementSpeed = walkSpeed;
-            animationSpeed = movementSpeed * 10;
-            
-        }
+            if (Input.GetKey(KeyCode.LeftShift) && !actionInUse)
+            {
+                movementSpeed = sprintSpeed;
+                animationSpeed = movementSpeed * 10;
+            }
+            else
+            {
+                movementSpeed = walkSpeed;
+                animationSpeed = movementSpeed * 10;
+            } 
     }
 
-    void MovementSet()
+    private void MovementSet()
     {
         SprintFunction();
         MovementForce();
         AnimationInput();
     }
-
     
-
     private void AnimationInput()
     {
         if (!Input.GetKey("d") && !Input.GetKey("w") && !Input.GetKey("s") && !Input.GetKey("a"))
@@ -133,7 +172,7 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    void MovementForce()
+    private void MovementForce()
     {
         if (Input.GetKey("w"))
         {
