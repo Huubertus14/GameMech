@@ -17,11 +17,7 @@ public class PlayerMovement : MonoBehaviour {
     public float sprintSpeed = 0.9f;
     public float walkSpeed = 0.5f;
 
-
-    public bool actionInUse = false;
-    private float actionTimer;
-    public float actionCounter;
-    private ActionController acController;
+    private bool iswalking;
 
     //0 = down
     //1 = up
@@ -44,23 +40,15 @@ public class PlayerMovement : MonoBehaviour {
     void Awake () {
         //Walkingspeed
         movementSpeed = 0.5f;
-
-        actionTimer = 3;
-        actionCounter = actionTimer;
-
-
-        actionInUse = false;
-
+       
         spr = gameObject.GetComponentInChildren<SpriteRenderer>();
         rb = gameObject.GetComponent<Rigidbody2D>();
-        acController = gameObject.GetComponentInChildren<ActionController>();
         
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-
-        ActionCheck();
+        
         MovementSet();
         PlayerAnimation();
     }
@@ -88,27 +76,6 @@ public class PlayerMovement : MonoBehaviour {
 
     }
     
-    private void ActionCheck()
-    {
-        if(actionCounter > -1)
-        {
-            actionCounter -= 1 * Time.deltaTime;
-        }
-
-        if (actionCounter < 0) {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                actionCounter = actionTimer;
-                actionInUse = true;
-                
-            } else
-            {
-                actionInUse = false;
-            }
-            
-        }
-        acController.ActionUse(state, actionInUse);
-    }
 
     private void FixedPlayerAnimation(Sprite[] sprites)
     {
@@ -134,7 +101,7 @@ public class PlayerMovement : MonoBehaviour {
     private void SprintFunction()
     {
         //Checks if sprinting or not
-            if (Input.GetKey(KeyCode.LeftShift) && !actionInUse)
+            if (Input.GetKey(KeyCode.LeftShift))
             {
                 movementSpeed = sprintSpeed;
                 animationSpeed = movementSpeed * 10;
@@ -157,13 +124,14 @@ public class PlayerMovement : MonoBehaviour {
     {
         if (!Input.GetKey("d") && !Input.GetKey("w") && !Input.GetKey("s") && !Input.GetKey("a"))
         {
-
+            iswalking = false;
             rb.velocity = new Vector2(0, 0);
             animationCounter = 0;
             PlayerAnimation();
         }
         else
         {
+            iswalking = true;
             animationCounter += animationSpeed * Time.deltaTime;
             if (animationCounter > 3.9f)
             {
@@ -201,5 +169,16 @@ public class PlayerMovement : MonoBehaviour {
             rb.velocity = new Vector2(movementSpeed, rb.velocity.y);
             state = 3;
         }
+    }
+
+    public int getState()
+    {
+
+        return state;
+    }
+
+    public bool checkIfWalking()
+    {
+        return iswalking;
     }
 }
