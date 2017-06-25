@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour {
     //2 = left
     //3 = rigth
 
-    private int state = 0;
+    private int viewDirection = 0;
 
 
     private SpriteRenderer spr;
@@ -55,20 +55,20 @@ public class PlayerMovement : MonoBehaviour {
 
     private void PlayerAnimation()
     {
-            //Check the state and call the animations for that kind of sprite set & state
-            if (state == 0)
+            //Check the viewDirection and call the animations for that kind of sprite set & viewDirection
+            if (viewDirection == 0)
             {
                 FixedPlayerAnimation(downSprites);
             }
-            else if (state == 1)
+            else if (viewDirection == 1)
             {
                 FixedPlayerAnimation(upSprites);
             }
-            else if (state == 2)
+            else if (viewDirection == 2)
             {
                 FixedPlayerAnimation(leftSprites);
             }
-            else if (state == 3)
+            else if (viewDirection == 3)
             {
                 FixedPlayerAnimation(rightSprites);
             }
@@ -146,35 +146,35 @@ public class PlayerMovement : MonoBehaviour {
         {
             //Up
             rb.velocity = new Vector2(rb.velocity.x, movementSpeed);
-            state = 1;
+            viewDirection = 1;
         }
 
         if (Input.GetKey("a"))
         {
             //Left
             rb.velocity = new Vector2(-movementSpeed, rb.velocity.y);
-            state = 2;
+            viewDirection = 2;
         }
 
         if (Input.GetKey("s"))
         {
             //Down
             rb.velocity = new Vector2(rb.velocity.x, -movementSpeed);
-            state = 0;
+            viewDirection = 0;
         }
 
         if (Input.GetKey("d"))
         {
             //Right
             rb.velocity = new Vector2(movementSpeed, rb.velocity.y);
-            state = 3;
+            viewDirection = 3;
         }
     }
 
     public int getState()
     {
 
-        return state;
+        return viewDirection;
     }
 
     public bool checkIfWalking()
