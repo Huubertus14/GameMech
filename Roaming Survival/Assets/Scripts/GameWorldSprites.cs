@@ -3,28 +3,25 @@ using System.Collections;
 
 public class GameWorldSprites : MonoBehaviour {
 
-    public GameObject grass;
-    public int worldSize = 160;
+    public GameObject grassTile;
+    public GameObject[] grassBorderTiles = new GameObject[8];
+    public Vector2 worldSize = new Vector2(100,100);
 
 	// Use this for initialization
 	void Awake () {
-
-	//Make world in positiove direction
-    /*
-    for (int i = 0; i < worldSize; i++)
+        for (int i = (int)-worldSize.x; i < worldSize.x; i++)
         {
-            for (int j = 0; j < worldSize; j++)
+            for (int j = (int)-worldSize.y; j < worldSize.y; j++)
             {
-                    Instantiate(grass);
-                    grass.transform.position = new Vector3(i, j, 0);
-                    Instantiate(grass);
-                    grass.transform.position = new Vector3(j, i, 0);
+                //Init a world full of grass
+                InitializeTile(grassTile, i, j);
             }
-        }*/
+        }
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	private void InitializeTile(GameObject tile, float xPosition, float yPosition)
+    {
+        Instantiate(tile);
+        tile.transform.position = new Vector3(xPosition, yPosition, 0);
+    }
 }
